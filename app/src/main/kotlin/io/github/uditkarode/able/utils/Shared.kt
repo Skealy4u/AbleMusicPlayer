@@ -328,35 +328,39 @@ class Shared {
          * @return an ArrayList of Song objects containing all the Songs that the musicFolder
          * contains.
          */
-        fun getSongList(musicFolder: File): ArrayList<Song> {
+        fun getSongList(musicFolder1: File,musicFolder2: File): ArrayList<Song> {
             var songs: ArrayList<Song> = ArrayList()
             var name = "???"
             var artist = "???"
-            for (f in musicFolder.listFiles()?:arrayOf()) {
-                if(!f.isDirectory){
-                    if(f.extension == "tmp" ||
-                        (f.nameWithoutExtension.length != 11 && f.nameWithoutExtension.length != 17)
-                        || (f.extension != "webm" && f.extension != "mp3")){
-                        continue
-                    }
-
-                    val mediaInfo = FFprobe.getMediaInformation(f.absolutePath)
-                    if(mediaInfo != null){
-                        val metadata = mediaInfo.metadataEntries
-                        for(map in metadata){
-                            if(map.key == "title")
-                                name = map.value
-                            else if(map.key == "ARTIST" || map.key == "artist")
-                                artist = map.value
+            var arr = arrayOf(musicFolder1,musicFolder2)
+            for (musicFolder in arr) {
+                for (f in musicFolder.listFiles() ?: arrayOf()) {
+                    if (!f.isDirectory) {
+                        if (f.extension == "tmp" ||
+                            (f.nameWithoutExtension.length != 11 && f.nameWithoutExtension.length != 17)
+                            || (f.extension != "webm" && f.extension != "mp3")
+                        ) {
+                            continue
                         }
-                        if(name != "???"){
-                            songs.add(
-                                Song(
-                                    name,
-                                    artist,
-                                    filePath = f.path
+
+                        val mediaInfo = FFprobe.getMediaInformation(f.absolutePath)
+                        if (mediaInfo != null) {
+                            val metadata = mediaInfo.metadataEntries
+                            for (map in metadata) {
+                                if (map.key == "title")
+                                    name = map.value
+                                else if (map.key == "ARTIST" || map.key == "artist")
+                                    artist = map.value
+                            }
+                            if (name != "???") {
+                                songs.add(
+                                    Song(
+                                        name,
+                                        artist,
+                                        filePath = f.path
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                 }
