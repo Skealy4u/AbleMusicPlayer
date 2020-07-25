@@ -120,7 +120,7 @@ class Home: Fragment() {
         bindEvent()
 
         thread {
-            songList = Shared.getSongList(Constants.ableSongDir)
+            songList = Shared.getSongList(Constants.ableSongDir,Constants.playlistSongDir)
             songAdapter = SongAdapter(songList, WeakReference(this@Home), true)
             activity?.runOnUiThread {
                 songs.adapter = songAdapter
@@ -252,7 +252,7 @@ class Home: Fragment() {
                                     tempFile.delete()
                                     activity?.runOnUiThread {
                                         Log.i("INFO>", "Updating RecyclerView")
-                                        songAdapter?.update(Shared.getSongList(Constants.ableSongDir))
+                                        songAdapter?.update(Shared.getSongList(Constants.ableSongDir,Constants.playlistSongDir))
                                         songAdapter?.notifyDataSetChanged()
                                     }
                                 }
@@ -294,7 +294,8 @@ class Home: Fragment() {
 
     /* download to videoId.webm.tmp, add metadata and save to videoId.webm */
     fun downloadVideo(){
-        songList = Shared.getSongList(Constants.ableSongDir)
+        songList = Shared.getSongList(Constants.ableSongDir,Constants.playlistSongDir)
+        //songList = Shared.getSongList(Constants.playlistSongDir )
         activity?.runOnUiThread {
             songAdapter?.update(songList)
         }
